@@ -7,10 +7,20 @@ const definitionRoutes = require("./../controllers/dictionary-controller.ts");
 // Create router
 const router = expressRoute.Router();
 
-// Add route for GET request to retrieve all book
-// In server.js, books route is specified as '/books'
-// this means that '/all' translates to '/books/all'
-router.get("/all", definitionRoutes.definitionAll);
+// Add route for GET request to retrieve all definitions
+// In server.ts, dictionary route is specified as '/dictionary'
+// this means that '/all' translates to '/dictionary/allDefinitions'
+router.get("/allDefinitions", definitionRoutes.definitionAll);
+
+// Add route for GET request to retrieve all languages
+// In server.ts, dictionary route is specified as '/dictionary'
+// this means that '/all' translates to '/dictionary/allLanguages'
+router.get("/allLanguages", definitionRoutes.languageAll);
+
+// Add route for GET request to retrieve all definitions of a language
+// In server.ts, dictionary route is specified as '/dictionary'
+// this means that '/definitionsByLanguage' translates to '/dictionary/definitionsByLanguage'
+router.get("/definitionsByLanguage", definitionRoutes.definitionsByLanguage);
 
 // Export router
 module.exports = router;
