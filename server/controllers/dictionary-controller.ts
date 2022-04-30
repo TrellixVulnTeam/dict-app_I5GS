@@ -36,9 +36,6 @@ exports.languageAll = async (req, res) => {
 
 // Retrieve all definitions of a language
 exports.definitionsByLanguage = async (req, res) => {
-  console.log("-----------------------");
-  console.log("req", req);
-  console.log("-----------------------");
   // Get all languages from database
   knexController
     .where("id_language", Number(req.query.idLanguage))

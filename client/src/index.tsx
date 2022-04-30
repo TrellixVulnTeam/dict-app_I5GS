@@ -2,11 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import DictionaryDashboard from "./components/dict-dashboard/dictionaryDashboard";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { DictionaryList } from "./components/dict-list/dictionaryList";
-import DictionaryAddLanguage from "./components/dict-add-language/dictionaryAddLanguage";
-import DictionaryAddDefinition from "./components/dict-add-definition/dictionaryAddDefinition";
+import DictionaryDashboard from "./components/pages/dict-dashboard/dictionaryDashboard";
+import { DictionaryList } from "./components/pages/dict-list/dictionaryList";
+import DictionaryAddLanguage from "./components/pages/dict-add-language/dictionaryAddLanguage";
+import DictionaryAddDefinition from "./components/pages/dict-add-definition/dictionaryAddDefinition";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
