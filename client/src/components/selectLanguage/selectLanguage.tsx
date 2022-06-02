@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import ILanguageProps from "../../interfaces/ILanguagesProps";
 import Language from "../../models/language";
 
-const SelectLanguage = ({ languages }: ILanguageProps) => {
+const SelectLanguage = ({ languages, onChange }: ILanguageProps) => {
   const defaultAllLanguages = new Language(0, "All");
   const [selectedLanguageId, setSelectedLanguageId] = useState(0);
   const [languagesList, setLanguagesList] = useState<Language[]>([
@@ -20,14 +20,15 @@ const SelectLanguage = ({ languages }: ILanguageProps) => {
 
   useEffect(() => {
     setLanguagesList(
-      [...languages, new Language(0, "All")]?.sort((x) =>
-        x?.label > x?.label ? 1 : -1
+      [...languages, new Language(0, "All")]?.sort((x, y) =>
+        x?.label > y?.label ? 1 : -1
       )
     );
   }, [languages]);
 
   const handleChange = (event: SelectChangeEvent<number>) => {
     setSelectedLanguageId(event.target.value as number);
+    onChange(event.target.value as number);
   };
 
   return (

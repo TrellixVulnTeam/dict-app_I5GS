@@ -52,3 +52,19 @@ exports.definitionsByLanguage = async (req, res) => {
       });
     });
 };
+
+// Retrieve definition by Id
+exports.definitionByIdDef = async (req, res) => {
+  knexController
+    .where("id_def", Number(req.query.idDefinition))
+    .select("*")
+    .from("definition")
+    .then((userData) => {
+      res.json(userData);
+    })
+    .catch((err) => {
+      res.json({
+        message: `There was an error retrieving definition by id: ${err}`,
+      });
+    });
+};

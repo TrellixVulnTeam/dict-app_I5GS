@@ -1,34 +1,50 @@
-// Import deps
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Definition from "../../../models/definition";
 import Language from "../../../models/language";
 import SelectLanguage from "../../selectLanguage/selectLanguage";
+import DataTable from "../../data-table/dataTable";
+import LanguagesHelper from "../../../helpers/languagesHelper";
+import DefinitionsHelper from "../../../helpers/definitionsHelper";
+import DefinitionDialog from "../../definitionDialog/definitionDialog";
 
-// Create Dictionary component
 export const DictionaryList = () => {
   // Prepare states
   let [definitions, setDefinitions] = useState<Array<Definition>>([]);
   const [languages, setLanguages] = useState<Array<Language>>([]);
-  const [definitionsByLanguage, setDefinitionsByLanguage] = useState([]);
+  const [selectedLanguageId, setSelectedLanguageId] = useState(0);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
 
-  // Fetch all books on initial render
+  // Fetch all languages on initial render, fetch definitions according to the selected language
   useEffect(() => {
     (async () => {
-      await fetchLanguages();
+      try {
+        await fetchAllLanguages();
+
+        if (selectedLanguageId) {
+          await fetchDefinitionsByLanguage(selectedLanguageId);
+        } else {
+          await fetchAllDefinitions();
+        }
+      } catch (error) {
+        console.error(
+          `There was an error while trying to initialize the state: ${error}`
+        );
+      }
     })();
-  }, []);
+  }, [selectedLanguageId]);
 
   // Fetch all definitions
-  const fetchDefinitions = () => {
-    // Send GET request to 'dictionary/allDefinitions' endpoint
+  const fetchAllDefinitions = () => {
     axios
       .get("http://localhost:5000/dictionary/allDefinitions")
       .then((response) => {
         if (response) {
-          setDefinitions([...loadDefinitionsList(response.data)]);
+          setDefinitions([
+            ...DefinitionsHelper.loadDefinitionsList(response.data),
+          ]);
           setLoading(false);
         }
       })
@@ -39,34 +55,13 @@ export const DictionaryList = () => {
       });
   };
 
-  const loadDefinitionsList = (data: any): Definition[] => {
-    if (data) {
-      let definitionsList = new Array<Definition>();
-      let definition: Definition;
-      data.forEach((def: any) => {
-        definition = {
-          id: def.id_def,
-          word: def.word,
-          definition: def.definition,
-          translation: def.translation,
-        };
-        definitionsList.push(definition);
-      });
-      return definitionsList;
-    }
-    return [];
-  };
-
   // Fetch all languages
-  const fetchLanguages = async () => {
-    // Send GET request to 'dictionary/allLanguages' endpoint
+  const fetchAllLanguages = async () => {
     axios
       .get("http://localhost:5000/dictionary/allLanguages")
       .then((response) => {
-        // Update the languages state
         if (response) {
-          setLanguages([...loadLanguagesList(response.data)]);
-          // Update loading state
+          setLanguages([...LanguagesHelper.loadLanguagesList(response.data)]);
           setLoading(false);
         }
       })
@@ -77,34 +72,16 @@ export const DictionaryList = () => {
       );
   };
 
-  const loadLanguagesList = (data: any): Language[] => {
-    if (data) {
-      let languagesList = new Array<Language>();
-      let language: Language;
-      data.forEach((def: any) => {
-        language = {
-          id: def.id_language,
-          label: def.libelle,
-        };
-        languagesList.push(language);
-      });
-      return languagesList;
-    }
-    return [];
-  };
-
   // Fetch all definitions of a language
-  const fetchDefinitionsByLanguage = async () => {
-    // Send GET request to 'dictionary/definitionsByLanguage' endpoint
+  const fetchDefinitionsByLanguage = async (idLang: number) => {
     axios
       .get("http://localhost:5000/dictionary/definitionsByLanguage", {
-        params: { idLanguage: 1 },
+        params: { idLanguage: idLang },
       })
       .then((response) => {
-        // Update the definitions state
-        setDefinitionsByLanguage(response.data);
-
-        // Update loading state
+        setDefinitions([
+          ...DefinitionsHelper.loadDefinitionsList(response.data),
+        ]);
         setLoading(false);
       })
       .catch((error) =>
@@ -114,9 +91,24 @@ export const DictionaryList = () => {
       );
   };
 
+  //Test
+
   return (
-    <div>
-      <SelectLanguage languages={languages} />
+    <div className="data-details">
+      <label>{isOpen.toString()}</label>
+      <SelectLanguage
+        languages={languages}
+        onChange={(value: number) => setSelectedLanguageId(value)}
+      />
+      <DataTable
+        definitions={definitions}
+        onDoubleClick={(value: boolean) => setIsOpen(value)}
+      />
+      <DefinitionDialog
+        openProp={isOpen}
+        definitionProp={new Definition(0, "", "", "")}
+        dataModeProp={0}
+      />
     </div>
   );
 };

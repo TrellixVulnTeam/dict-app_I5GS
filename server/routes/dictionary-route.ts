@@ -22,5 +22,8 @@ router.get("/allLanguages", definitionRoutes.languageAll);
 // this means that '/definitionsByLanguage' translates to '/dictionary/definitionsByLanguage'
 router.get("/definitionsByLanguage", definitionRoutes.definitionsByLanguage);
 
+//Route to Get Definition by IdDef
+router.get("/definitionByIdDef", definitionRoutes.definitionByIdDef);
+
 // Export router
 module.exports = router;
