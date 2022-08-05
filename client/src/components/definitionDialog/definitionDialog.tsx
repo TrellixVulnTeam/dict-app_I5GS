@@ -8,14 +8,20 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Definition from "../../models/definition";
+import axios from "axios";
+import DefinitionsHelper from "../../helpers/definitionsHelper";
 
 const DefinitionDialog = ({
-  definitionProp,
+  idDefinitionProp,
   dataModeProp,
   openProp,
+  onClosePopUp,
 }: ISingleDefinitionProps) => {
   const [open, setOpen] = useState(openProp);
-  const [definition, setDefinition] = useState<Definition>(definitionProp);
+  const [idDefinition, setIdDefinition] = useState(idDefinitionProp);
+  const [definition, setDefinition] = useState<Definition>(
+    new Definition(0, "", "", "")
+  );
   const [dataMode, setDataMode] = useState(dataModeProp);
 
   const handleClickOpen = () => {
@@ -24,26 +30,49 @@ const DefinitionDialog = ({
 
   const handleClose = () => {
     setOpen(false);
+    onClosePopUp(false);
   };
 
   useEffect(() => {
-    console.log("in dialog");
-  });
+    if (openProp) {
+      setOpen(openProp);
+      setIdDefinition(idDefinitionProp);
+      fetchDefinitionsById(idDefinition);
+    }
+  }, [openProp]);
+
+  // Fetch all definitions of a language
+  const fetchDefinitionsById = async (idDef: number) => {
+    axios
+      .get("http://localhost:5000/dictionary/definitionByIdDef", {
+        params: { idDefinition: idDef },
+      })
+      .then((response) => {
+        if (response && response.data) {
+          setDefinition(DefinitionsHelper.loadDefinition(response.data[0]));
+        }
+      })
+      .catch((error) =>
+        console.error(
+          `There was an error retrieving the defintions list: ${error}`
+        )
+      );
+  };
 
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle>Definition details</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here.
-            We will send updates occasionally.
-          </DialogContentText>
+          <DialogContentText>{definition.id}</DialogContentText>
+          <DialogContentText>{definition.word}</DialogContentText>
+          <DialogContentText>{definition.definition}</DialogContentText>
+          <DialogContentText>{definition.translation}</DialogContentText>
           <TextField />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button>Subscribe</Button>
+          <Button>Update</Button>
         </DialogActions>
       </Dialog>
     </div>

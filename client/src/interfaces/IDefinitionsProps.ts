@@ -4,7 +4,7 @@ import Language from "../models/language";
 interface IDefinitionsProps {
   definitions: Array<Definition>;
 
-  onDoubleClick: (value: boolean) => void;
+  selectDefinition: (value: number) => void;
 }
 
 export default IDefinitionsProps;

@@ -10,12 +10,13 @@ import DefinitionDialog from "../../definitionDialog/definitionDialog";
 
 export const DictionaryList = () => {
   // Prepare states
-  let [definitions, setDefinitions] = useState<Array<Definition>>([]);
+  const [definitions, setDefinitions] = useState<Array<Definition>>([]);
   const [languages, setLanguages] = useState<Array<Language>>([]);
   const [selectedLanguageId, setSelectedLanguageId] = useState(0);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [idDefinitionSelected, setIdDefinitionSelected] = useState(0);
 
   // Fetch all languages on initial render, fetch definitions according to the selected language
   useEffect(() => {
@@ -91,24 +92,44 @@ export const DictionaryList = () => {
       );
   };
 
-  //Test
+  const openPopUp = (value: number) => {
+    setIdDefinitionSelected(value);
+    setIsOpen(true);
+  };
 
-  return (
-    <div className="data-details">
-      <label>{isOpen.toString()}</label>
-      <SelectLanguage
-        languages={languages}
-        onChange={(value: number) => setSelectedLanguageId(value)}
-      />
-      <DataTable
-        definitions={definitions}
-        onDoubleClick={(value: boolean) => setIsOpen(value)}
-      />
-      <DefinitionDialog
-        openProp={isOpen}
-        definitionProp={new Definition(0, "", "", "")}
-        dataModeProp={0}
-      />
-    </div>
-  );
+  {
+    if (isOpen != true) {
+      return (
+        <div>
+          <SelectLanguage
+            languages={languages}
+            onChange={(value: number) => setSelectedLanguageId(value)}
+          />
+          <DataTable
+            definitions={definitions}
+            selectDefinition={(value: number) => openPopUp(value)}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <SelectLanguage
+            languages={languages}
+            onChange={(value: number) => setSelectedLanguageId(value)}
+          />
+          <DataTable
+            definitions={definitions}
+            selectDefinition={(value: number) => openPopUp(value)}
+          />
+          <DefinitionDialog
+            openProp={isOpen}
+            idDefinitionProp={idDefinitionSelected}
+            dataModeProp={0}
+            onClosePopUp={(value: boolean) => setIsOpen(value)}
+          />
+        </div>
+      );
+    }
+  }
 };

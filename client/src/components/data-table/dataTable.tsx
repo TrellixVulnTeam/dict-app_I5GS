@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import DefinitionDialog from "../definitionDialog/definitionDialog";
 import Definition from "../../models/definition";
 
-const DataTable = ({ definitions, onDoubleClick }: IDefinitionsProps) => {
+const DataTable = ({ definitions, selectDefinition }: IDefinitionsProps) => {
   const columns = [
     { field: "id", headerName: "ID", width: 30 },
     { field: "word", headerName: "Word", width: 150 },
@@ -37,7 +37,6 @@ const DataTable = ({ definitions, onDoubleClick }: IDefinitionsProps) => {
   };
 
   const [pageSize, setPageSize] = useState(10);
-  const [isDoubleClicked, setIsDoubleClicked] = useState(false);
 
   function openDetailsAndUpdateDialog(
     params: GridCellParams<any, any, any>,
@@ -46,9 +45,7 @@ const DataTable = ({ definitions, onDoubleClick }: IDefinitionsProps) => {
     if (!event.ctrlKey) {
       event.defaultMuiPrevented = true;
     }
-    console.log("params", params);
-    setIsDoubleClicked(true);
-    onDoubleClick(isDoubleClicked);
+    selectDefinition(params?.row.id);
   }
 
   return (
