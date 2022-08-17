@@ -1,0 +1,12 @@
+.translation > label {
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.translation {
+  margin-top: 5%;
+}
+
+.modification {
+  padding: 8px;
+}

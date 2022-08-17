@@ -125,7 +125,6 @@ export const DictionaryList = () => {
           <DefinitionDialog
             openProp={isOpen}
             idDefinitionProp={idDefinitionSelected}
-            dataModeProp={0}
             onClosePopUp={(value: boolean) => setIsOpen(value)}
           />
         </div>
